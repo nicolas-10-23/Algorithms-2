@@ -1,34 +1,44 @@
 
-Diagrama en la bitácora (Lista original vs Enlace perdido)
+s# Bitácora: Listas Enlazadas Simples
 
- 
- Lista enlazada completa
+## 1. Diagrama de nodos y flechas (Lista completa)
 
-    Cabeza
-      | 
-      |
-     Nodo1 (2x)                   Nodo2 (4x)                  Nodo3 (6x)  
-   [ atencion1  | 4x ] ----> [ atencion2  | 6x ] ----> [ atencion3  | null ]   
+Cada nodo almacena el objeto de atención médica y la dirección de memoria (`siguiente`) del próximo nodo en la cadena:
 
+```text
+  Cabeza
+    │
+    ▼
+  Nodo 1 (0x2)                 Nodo 2 (0x4)                 Nodo 3 (0x6)
+┌───────────────────┐        ┌───────────────────┐        ┌─────────────────────┐
+│   dato1    │ 0x4  │───────►│   dato2    │ 0x6  │───────►│     dato3  │  null  │
+└───────────────────┘        └───────────────────┘        └─────────────────────┘
+```
 
- Con el enlace perdido (atencion1.siguiente = null)
+---
 
-    Cabeza
-      | 
-      |
-     Nodo1 (2x)                        Nodo2 (4x)                  Nodo3 (6x)  
-   [ atencion1  | null ]           [ atencion2  | 6x ] ----> [ atencion3  | null ]   
-                                           |
-                                           |
-                                        (Nodos huérfanos / inaccesibles desde cabeza)
- 
+## 2. Simulación de enlace perdido (`dato1.siguiente = null`)
 
-¿Qué ocurre con el recorrido y por qué?
+Al asignar `null` al puntero `.siguiente` del primer nodo, se rompe la cadena:
 
-Si se cambia atencion1.siguiente(cabeza) = null y se ejecuta RecorrerListaEnlazada(cabeza), pasa lo siguiente:
+```text
+  Cabeza
+    │
+    ▼
+  Nodo 1 (0x2)                 Nodo 2 (0x4)                 Nodo 3 (0x6)
+┌───────────────────┐        ┌───────────────────┐        ┌─────────────────────┐
+│    dato    │ null │   X    │   dato2    │ 0x6  │───────►│   dato3    │  null  │
+└───────────────────┘        └───────────────────┘        └─────────────────────┘
+                                       ▲
+                                       │
+                        (Nodos huérfanos / inaccesibles)
+```
 
-1.Solo imprime el primer nodo: En la consola únicamente se verá los datos de atencion1.
+---
 
-2.El ciclo while termina antes de tiempo, ya que el actual ya no es diferente de null.  
+## 3. ¿Qué ocurre con el recorrido y por qué?
 
-3.Se pierde el acceso al resto de la lista como se muestra en el segundo diagrama, cada nodo solo conoce la dirección del que sigue; al borrar la referencia en atencion1, se rompió el único puente hacia atencion2.
+* **Detención temprana:** Al ejecutar `RecorrerListaEnlazada(cabeza)`, la función únicamente imprime los datos de `dato1` y termina inmediatamente.
+* **Condición del ciclo:** Cuando el código evalúa `actual = actual.siguiente`, la variable `actual` pasa a valer `null`. En la siguiente iteración, la condición `while (actual !== null)` resulta falsa y el ciclo se cierra.
+* **Pérdida de acceso:** En una lista enlazada simple, cada nodo solo conoce la dirección de memoria del que le sigue. Al borrar la referencia `0x4` en `dato1`, se destruye el único puente hacia `dato2` y `dato3`, dejando ambos nodos huérfanos en memoria.
+

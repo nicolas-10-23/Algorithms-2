@@ -1,7 +1,9 @@
-export default class Nodo{
-    constructor(atencion)
+class Nodo{
+    constructor(dato)
     {
-        this.atencion = atencion;
+        this.dato = dato;
         this.siguiente = null;
     }
 }
+
+module.exports = Nodo;
